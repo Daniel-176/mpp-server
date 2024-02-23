@@ -19,7 +19,7 @@ class Client extends EventEmitter {
         this.quotas = {};
         this.ws = ws;
         this.req = req;
-        this.ip = (req.connection.remoteAddress).replace("::ffff:", "");
+        this.ip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress).replace("::ffff:", "").split(',')[0];
         this.destroied = false;
         this.bindEventListeners();
         require('./Message.js')(this);
