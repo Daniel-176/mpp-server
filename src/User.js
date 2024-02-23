@@ -55,6 +55,7 @@ class User {
             "color": user.color,
             "name": user.name,
             "_id": user._id,
+            "rank": sendToken ? user.rank : null,
             "token": sendToken ? user.token : null,
             "perks": sendToken ? user.perks : null,
             "tag": user.tag,
