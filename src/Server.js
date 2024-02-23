@@ -1,12 +1,21 @@
 const Client = require("./Client.js");
 const banned = require('../banned.json');
+const http = require("http")
+const fs = require('fs')
+var path = require("path")
+const express = require('express')
+const app = express()
+app.use(express.static(path.join(__dirname, '..', 'client')));
 
 class Server extends EventEmitter {
     constructor(config) {
         super();
         EventEmitter.call(this);
+        this.server = http.createServer(
+          // options,
+        app).listen(config.port)
         this.wss = new WebSocket.Server({
-            port: config.port,
+            server: this.server,
             backlog: 100,
             verifyClient: (info) => {
                 if (banned.includes((info.req.connection.remoteAddress).replace("::ffff:", ""))) return false;

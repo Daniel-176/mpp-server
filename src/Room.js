@@ -57,6 +57,7 @@ class Room extends EventEmitter {
                 id: this.ppl.get(cl.participantId).participantId,
                 m: "p",
                 name: this.ppl.get(cl.participantId).user.name,
+                tag: this.ppl.get(cl.participantId).user.tag,
                 x: this.ppl.get(cl.participantId).x || 200,
                 y: this.ppl.get(cl.participantId).y || 100,
                 _id: cl.user._id
@@ -115,10 +116,12 @@ class Room extends EventEmitter {
         options.name ? p.user.name = options.name : {};
         options._id ? p.user._id = options._id : {};
         options.color ? p.user.color = options.color : {};
+        options.tag ? p.user.tag = options.tag : {};
         this.connections.filter((ofo) => ofo.participantId == p.participantId).forEach((usr) => {
             options.name ? usr.user.name = options.name : {};
             options._id ? usr.user._id = options._id : {};
             options.color ? usr.user.color = options.color : {};
+            options.tag ? usr.user.tag = options.tag : {};
         })
         this.sendArray([{
             color: p.user.color,
@@ -376,6 +379,14 @@ class Room extends EventEmitter {
                 }
                 break;
             }
+            
+            case "user": {
+                for (let con of this.connections) {
+                    console.log(con)
+                }
+                break;
+            }
+
             default: {
                 Array.from(this.server.connections.values()).filter((usr) => usr.user._id == who).forEach((p) => {
                     p.sendArray([obj]);

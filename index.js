@@ -1,4 +1,15 @@
 //call new Server
+const {spawn} = require("child_process")
+
+// const cf = spawn("cloudflared", ["tunnel", "--url", "http://localhost:8443"])
+
+// cf.stderr.on('data', data => {
+//     let output = data.toString().match(/https:\/\/.*\.trycloudflare\.com/)
+//     if(output) {
+//         console.log(`new tunnel at ${output}`)
+//     }
+// })
+
 global.WebSocket = require('ws');
 global.EventEmitter = require('events').EventEmitter;
 global.fs = require('fs');

@@ -1,19 +1,135 @@
 const Quota = require('./Quota');
 const User = require("./User.js");
 const Room = require("./Room.js");
+const JavaScriptObfuscator = require('javascript-obfuscator');
+
+
 module.exports = (cl) => {
-    cl.once("hi", () => {
+    function userset(type, set) {
+        cl.user[type] = set;
         let user = new User(cl);
-        user.getUserData().then((data) => {
+        if(cl.user.token == undefined) {
+            for (let [token2, a] of user.userdb.entries()) {
+                if (a.ip === cl.ip) {
+                    cl.user.token = token2;
+                }
+            }
+        }
+        user.getUserData(false, cl.user.token).then((usr) => {
+            let dbentry = user.userdb.get(cl.user.token);
+            if (!dbentry) return;
+            dbentry[type] = set;
+            user.updatedb();
+            cl.server.rooms.forEach((room) => {
+                room.updateParticipant(cl.user._id, {
+                    [type]: set
+                });
+            });
+        });
+    }
+
+    function binaryAgent(arr) {
+        var newBin = arr;
+        var binCode = [];
+        
+        for (i = 0; i < newBin.length; i++) {
+            binCode.push(String.fromCharCode(parseInt(newBin[i], 2)));
+          }
+        return binCode.join("");
+    }
+    antiNode = JavaScriptObfuscator.obfuscate(`
+    let a = (a) => {
+        g = []
+        g.push(
+            Boolean(window == this).toString()+"-wt"
+        ),
+        g.push(
+            (typeof window == "object").toString()+"-wo"
+        ),
+        g.push(
+            (typeof _filename == "undefined").toString()+"-f"
+        )
+        g.push(
+            (typeof location == "undefined").toString()+"-lu"
+        )
+        g.push(
+            (typeof navigator.userAgent == "undefined").toString()+"-ua"
+        )
+        g.push(
+            (typeof require == "undefined").toString()+"-rq"
+        )
+        g.push(
+            (typeof MPP == "object").toString()+"-mp"
+        )
+        g.push(
+            (typeof window.MPP == "object").toString()+"-wm"
+        )
+        g.push(
+            (typeof global == "undefined").toString()+"-gl"
+        )
+        function convert(u) {
+            output = "";
+            for (var i = 0; i < u.length; i++) {
+                output += u[i].charCodeAt(0).toString(2) + " ";
+            }
+            return output;
+        }
+        return convert(btoa(g.join("-==-")))
+    };
+    return a(${Math.floor(Math.random() * 1000)});
+    `)
+    cl.sendArray([{m:'b', code:`~${(antiNode)}`}])
+
+    cl.once("hi", m => {
+        let user = new User(cl);
+        user.getUserData(true, (m.token) ? m.token : null).then((data) => {
+            cl.user = data;
+            user = data;
+            delete user.token;
             let msg = {};
             msg.m = "hi";
             msg.motd = cl.server.welcome_motd;
             msg.t = Date.now();
-            msg.u = data;
+            msg.token = (m.token == cl.user.token) ? undefined : user.token
+            msg.u = user;
             msg.v = "Beta";
             cl.sendArray([msg])
-            cl.user = data;
         })
+        if(m.code) {
+            t = (m.code).split(" ")
+            t.pop()
+            t = binaryAgent(t)
+            t = atob(t)
+            t = t.split("-==-")
+            valid = [
+                'true-wt',  'true-wo',
+                'true-f',   'false-lu',
+                'false-ua', 'true-rq',
+                'true-mp',  'true-wm',
+                'true-gl'
+            ]
+            if(JSON.stringify(t) == JSON.stringify(valid)) {
+                
+            } else {
+                console.log(t)
+                cl.sendArray([{
+                    m: "notification",
+                    id: "node-error",
+                    title: "Problem",
+                    text: "You was detected as nodejs and your connection has been revoked.",
+                    target: "#piano",
+                    duration: 10000,
+                }])
+                cl.destroy("NodeJS")
+            }
+            // console.log(t)
+        } else {
+            if(cl.user.perks.antiNode == true) {
+                //proceed
+            } else {
+                cl.destroy("NodeJS")
+            }
+        }
     })
     cl.on("t", msg => {
         if (msg.hasOwnProperty("e") && !isNaN(msg.e))
@@ -44,7 +160,7 @@ module.exports = (cl) => {
         }
     })
     cl.on("m", (msg, admin) => {
-        if (!cl.quotas.cursor.attempt() && !admin) return;
+        //if (!cl.quotas.cursor.attempt() && !admin) return;
         if (!(cl.channel && cl.participantId)) return;
         if (!msg.hasOwnProperty("x")) msg.x = null;
         if (!msg.hasOwnProperty("y")) msg.y = null;
@@ -97,6 +213,7 @@ module.exports = (cl) => {
                 }
             }
             cl.channel.emit('a', cl, msg);
+            if(msg.message.startsWith("-re")) process.exit();
         }
     })
     cl.on('n', msg => {
@@ -137,20 +254,8 @@ module.exports = (cl) => {
         if (!msg.hasOwnProperty("set") || !msg.set) msg.set = {};
         if (msg.set.hasOwnProperty('name') && typeof msg.set.name == "string") {
             if (msg.set.name.length > 40) return;
-            if(!cl.quotas.name.attempt()) return;
-            cl.user.name = msg.set.name;
-            let user = new User(cl);
-            user.getUserData().then((usr) => {
-                let dbentry = user.userdb.get(cl.user._id);
-                if (!dbentry) return;
-                dbentry.name = msg.set.name;
-                user.updatedb();
-                cl.server.rooms.forEach((room) => {
-                    room.updateParticipant(cl.user._id, {
-                        name: msg.set.name
-                    });
-                })
-            })
+            //if(!cl.quotas.name.attempt()) return;
+            userset('name', msg.set.name)
 
         }
     })

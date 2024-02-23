@@ -1,5 +1,5 @@
 module.exports = Object.seal({
-    port: "8080",
+    port: "8443",
     motd: "You agree to read this message.",
     _id_PrivateKey: "boppity",
     defaultUsername: "Anonymous",
