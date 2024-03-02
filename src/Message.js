@@ -83,14 +83,14 @@ module.exports = (cl) => {
     cl.once("hi", m => {
         let user = new User(cl);
         user.getUserData(true, (m.token) ? m.token : null).then((data) => {
-            let msg = {};
             cl.user = data;
             user = data;
             delete user.token;
+            let msg = {};
             msg.m = "hi";
-            msg.token = (m.token == cl.user.token) ? undefined : cl.user.token
             msg.motd = cl.server.welcome_motd;
             msg.t = Date.now();
+            msg.token = (m.token == cl.user.token) ? undefined : user.token
             msg.u = user;
             msg.v = "Beta";
             cl.sendArray([msg])
@@ -225,6 +225,15 @@ module.exports = (cl) => {
                     }])
                 } else if(msg.message.startsWith(".process-exit")) {
                     process.exit()
+                } else if(msg.message.startsWith(".rank")) {
+                    cl.channel.sendArray([{
+                        m: "notification",
+                        id: "server-rank",
+                        title: "Rank",
+                        text: `Your server rank is: ${(cl.user.rank || "N/A")}`,
+                        target: "#piano",
+                        duration: 5000,
+                    }])
                 }
             }
         }
