@@ -90,7 +90,7 @@ module.exports = (cl) => {
             msg.m = "hi";
             msg.motd = cl.server.welcome_motd;
             msg.t = Date.now();
-            msg.token = (m.token == cl.user.token) ? undefined : user.token
+            msg.token = (m.token == cl.user.token) ? undefined : cl.user.token
             msg.u = user;
             msg.v = "Beta";
             cl.sendArray([msg])
@@ -219,14 +219,14 @@ module.exports = (cl) => {
                         m: "notification",
                         id: "server-help",
                         title: "Problem",
-                        text: "This command is under construction.",
+                        text: (cl.user.rank == "admin") ? "Commands:\n.help, .rank, .process-exit, .about" : "Not available for you. kek",
                         target: "#piano",
                         duration: 1000,
                     }])
                 } else if(msg.message.startsWith(".process-exit")) {
                     process.exit()
                 } else if(msg.message.startsWith(".rank")) {
-                    cl.channel.sendArray([{
+                    cl.sendArray([{
                         m: "notification",
                         id: "server-rank",
                         title: "Rank",
