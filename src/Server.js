@@ -1,11 +1,22 @@
 const Client = require("./Client.js");
 const banned = require('../banned.json');
+const JavaScriptObfuscator = require('javascript-obfuscator');
 const http = require("http")
 const fs = require('fs')
 var path = require("path")
 const express = require('express')
 const app = express()
+
 app.use(express.static(path.join(__dirname, '..', 'client')));
+obfuscated = fs.readdirSync(path.join(__dirname, '..', 'client', 'obfuscatedscripts'))
+// console.log(obfuscated)
+obfuscated.forEach(o => {
+    app.get("/"+o, (req, res) => {
+        var src = (fs.readFileSync(__dirname+'/../client/obfuscatedscripts/'+o, 'utf8'))
+        // console.log(src)
+        res.send(JavaScriptObfuscator.obfuscate(src).getObfuscatedCode())
+    })
+});
 
 class Server extends EventEmitter {
     constructor(config) {
@@ -14,6 +25,33 @@ class Server extends EventEmitter {
         this.server = http.createServer(
           // options,
         app).listen(config.port)
+        this.eapp = app;
+        
+        this.eapp.get('/getUserData', async (req, res) => {
+            var search = req._parsedUrl.search
+                .replaceAll("?", "-")
+                .replaceAll('&', '-')
+                .split(/[-=]+/)
+                .slice(1);
+            var id = search.includes("id") ? search[search.indexOf("id") + 1] : null;
+            if(id) {
+                const User = require('./User.js')
+                const U = new User({server: this})
+                res.setHeader('Content-Type', "application/json")
+                var sentJSON =  (await U.getUserDataById(id))
+                let _temp = sentJSON;
+                if(!search.includes("bp") && typeof _temp == 'object') {
+                    _temp = {
+                        color: sentJSON.color,
+                        name: sentJSON.name,
+                        _id: sentJSON._id,
+                        tag: sentJSON.tag || false,
+                    }
+                }
+                res.send(JSON.stringify(_temp, undefined, 2))
+            }
+        })
+
         this.wss = new WebSocket.Server({
             server: this.server,
             backlog: 100,

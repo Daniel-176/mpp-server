@@ -1,1 +1,32 @@
-{}
+{
+  "c317d2ace1cd822b30c4c21b.65e80aec-7775-4bf6-a4f8-493ee331cfec": {
+    "color": "#fa068b",
+    "name": "Anonymous",
+    "_id": "c317d2ace1cd822b30c4c21b",
+    "token": "c317d2ace1cd822b30c4c21b.65e80aec-7775-4bf6-a4f8-493ee331cfec",
+    "perks": {
+      "antiNodeBypass": false
+    },
+    "ip": "127.0.0.1"
+  },
+  "a583a15a38f9f69cf73de1fe.7caeac79-997d-4a81-9497-5fc92116f77c": {
+    "color": "#6b06ca",
+    "name": "Anonymous",
+    "_id": "a583a15a38f9f69cf73de1fe",
+    "token": "a583a15a38f9f69cf73de1fe.7caeac79-997d-4a81-9497-5fc92116f77c",
+    "perks": {
+      "antiNodeBypass": false
+    },
+    "ip": "127.0.0.1"
+  },
+  "c317d2ace1cd822b30c4c21b.c44f51b8-2f30-4b9c-a454-e7432bf52d46": {
+    "color": "#fa068b",
+    "name": "Anonymous",
+    "_id": "c317d2ace1cd822b30c4c21b",
+    "token": "c317d2ace1cd822b30c4c21b.c44f51b8-2f30-4b9c-a454-e7432bf52d46",
+    "perks": {
+      "antiNodeBypass": false
+    },
+    "ip": "::1"
+  }
+}

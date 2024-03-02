@@ -61,6 +61,16 @@ class User {
             "tag": user.tag,
         }
     }
+    async getUserDataById(id) {
+        if (!userdb || (userdb instanceof Map && [...userdb.entries()] == [])) {
+            await this.setUpDb();
+        }
+        for (let [token, user] of userdb.entries()) {
+            if (user._id === id) {
+                return await userdb.get(token)
+            }
+        }
+    }
     async updatedb() {
         const writeFile = promisify(fs.writeFile);
         await writeFile('src/db/users.json', JSON.stringify(User.strMapToObj(userdb), null, 2));
