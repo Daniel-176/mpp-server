@@ -1192,7 +1192,7 @@ $(function () {
   if (window.location.hostname === "localhost") {
     var gClient = new Client("ws://localhost:8443");
   } else {
-    var gClient = new Client("wss://"+location.hostname);
+    var gClient = new Client(location.protocol.replace("http", "ws")+"//"+location.hostname);
   }
   if (loginInfo) {
     gClient.setLoginInfo(loginInfo);
