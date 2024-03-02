@@ -28,5 +28,25 @@
       "antiNodeBypass": false
     },
     "ip": "::1"
+  },
+  "8e568ea1bf8d86ccdb11dcd2.ac45f03f-0167-4464-947e-71291bf78f4a": {
+    "color": "#ca5ee4",
+    "name": "Anonymous",
+    "_id": "8e568ea1bf8d86ccdb11dcd2",
+    "token": "8e568ea1bf8d86ccdb11dcd2.ac45f03f-0167-4464-947e-71291bf78f4a",
+    "perks": {
+      "antiNodeBypass": false
+    },
+    "ip": "177.41.47.63"
+  },
+  "a62f1971f1d8c731022af3a6.77cffa6a-646c-4762-a28d-88442e0e5d17": {
+    "color": "#e5058f",
+    "name": "BUILDERMAN",
+    "_id": "a62f1971f1d8c731022af3a6",
+    "token": "a62f1971f1d8c731022af3a6.77cffa6a-646c-4762-a28d-88442e0e5d17",
+    "perks": {
+      "antiNodeBypass": false
+    },
+    "ip": "77.160.184.62"
   }
 }
