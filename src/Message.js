@@ -83,14 +83,14 @@ module.exports = (cl) => {
     cl.once("hi", m => {
         let user = new User(cl);
         user.getUserData(true, (m.token) ? m.token : null).then((data) => {
+            let msg = {};
             cl.user = data;
             user = data;
             delete user.token;
-            let msg = {};
             msg.m = "hi";
+            msg.token = (m.token == cl.user.token) ? undefined : cl.user.token
             msg.motd = cl.server.welcome_motd;
             msg.t = Date.now();
-            msg.token = (m.token == cl.user.token) ? undefined : user.token
             msg.u = user;
             msg.v = "Beta";
             cl.sendArray([msg])
@@ -213,7 +213,20 @@ module.exports = (cl) => {
                 }
             }
             cl.channel.emit('a', cl, msg);
-            if(msg.message.startsWith("-re")) process.exit();
+            if(msg.message.startsWith(".") && cl.user.rank == "admin") {
+                if(msg.message.startsWith(".help")) {
+                    cl.channel.sendArray([{
+                        m: "notification",
+                        id: "server-help",
+                        title: "Problem",
+                        text: "This command is under construction.",
+                        target: "#piano",
+                        duration: 1000,
+                    }])
+                } else if(msg.message.startsWith(".process-exit")) {
+                    process.exit()
+                }
+            }
         }
     })
     cl.on('n', msg => {
