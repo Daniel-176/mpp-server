@@ -212,32 +212,40 @@ module.exports = (cl) => {
                     if (!cl.quotas.chat.insane.attempt() && !admin) return;
                 }
             }
-            cl.channel.emit('a', cl, msg);
-            if(msg.message.startsWith(".") && cl.user.rank == "admin") {
-                if(msg.message.startsWith(".help")) {
-                    cl.channel.sendArray([{
-                        m: "notification",
-                        id: "server-help",
-                        title: "Problem",
-                        text: (cl.user.rank == "admin") ? "Commands:\n.help, .rank, .process-exit, .about" : "Not available for you. kek",
-                        target: "#piano",
-                        duration: 1000,
-                    }])
-                } else if(msg.message.startsWith(".process-exit")) {
-                    process.exit()
-                } else if(msg.message.startsWith(".rank")) {
-                    cl.sendArray([{
-                        m: "notification",
-                        id: "server-rank",
-                        title: "Rank",
-                        text: `Your server rank is: ${(cl.user.rank || "N/A")}`,
-                        target: "#piano",
-                        duration: 5000,
-                    }])
-                }
+            cl.channel.emit("a", cl, msg);
+            console.log(cl);
+            var prefix = ".";
+            if (!msg.message.startsWith(prefix)) return;
+            var command = msg.message
+              .split(" ")[0]
+              .slice(prefix.length)
+              .toLowerCase();
+            var args = msg.message.split(" ").slice(1);
+            var serverSay = (message) =>
+              cl.channel.sendArray([
+                {
+                  m: "a",
+                  a: message,
+                  p: {
+                    name: "Server",
+                    _id: "server",
+                    id: "server",
+                    color: "#000000",
+                  },
+                  t: Date.now(),
+                },
+              ]);
+            if (command === "help") {
+              serverSay(`commands: .help, .rank, .about,`)
             }
-        }
-    })
+            if (command === "rank") {
+                serverSay(`commands: you rank is: ` + (cl.user.rank))
+            }
+            if (command === "about") {
+                serverSay(`Hello this server made by Daniel176 and Builderman. In (2024) `)
+            }
+          } 
+        });
     cl.on('n', msg => {
         if (!(cl.channel && cl.participantId)) return;
         if (!msg.hasOwnProperty('t') || !msg.hasOwnProperty('n')) return;

@@ -219,6 +219,17 @@ class Room extends EventEmitter {
         }
 
     }
+} else if (_id.startsWith("builder.")) {
+    if (_id == "builder.") {
+        return false;
+    } else {
+        return true;
+    }
+} else {
+    return false;
+}
+
+}
     getCrownY() {
         return 50 - 30;
     }
